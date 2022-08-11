@@ -17,6 +17,7 @@ package checks
 
 import (
 	"os"
+	"plugin"
 
 	"github.com/ossf/scorecard/v4/checker"
 )
@@ -29,6 +30,25 @@ func getAll(overrideExperimental bool) checker.CheckNameToFnMap {
 	possibleChecks := checker.CheckNameToFnMap{}
 	for k, v := range allChecks {
 		possibleChecks[k] = v
+	}
+
+	newCheck, err := plugin.Open("plugins/azeems.so")
+	if err != nil {
+		panic(err)
+	}
+
+	newCheckFn, err := newCheck.Lookup("AzeemsAwesomeCheck")
+	if err != nil {
+		panic(err)
+	}
+
+	newCheckAssertedFn, assert := newCheckFn.(*checker.CheckFn)
+	if !assert {
+		panic("no CheckFn")
+	}
+
+	possibleChecks["Azeems-Awesome-Check"] = checker.Check{
+		Fn: *newCheckAssertedFn,
 	}
 
 	if overrideExperimental {

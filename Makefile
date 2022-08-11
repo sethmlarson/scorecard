@@ -138,7 +138,7 @@ validate-docs: docs/checks/internal/generate/main.go
 
 build-scorecard: ## Runs go build on repo
 	# Run go build and generate scorecard executable
-	CGO_ENABLED=0 go build -trimpath -a -tags netgo -ldflags '$(LDFLAGS)'
+	CGO_ENABLED=1 go build  -a  -ldflags '$(LDFLAGS)'
 
 build-releaser: ## Runs goreleaser on the repo
 	# Run go releaser on the Scorecard repo
